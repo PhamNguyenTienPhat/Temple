@@ -1,0 +1,350 @@
+/* ===== VIETNAMESE BUDDHIST TEMPLE GAME - CSS ===== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Be+Vietnam+Pro:wght@300;400;600;700&display=swap');
+
+:root {
+  --gold: #d4a017;
+  --gold-light: #f0c040;
+  --gold-dark: #8b6914;
+  --red-temple: #8b1a1a;
+  --red-light: #c0392b;
+  --dark-bg: #0d0600;
+  --panel-bg: rgba(10, 5, 0, 0.82);
+  --panel-border: rgba(212, 160, 23, 0.4);
+  --text-gold: #f0c040;
+  --text-light: rgba(255, 240, 200, 0.9);
+  --glow: 0 0 12px rgba(212, 160, 23, 0.6);
+}
+
+* {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--dark-bg);
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+/* ===== LOADING SCREEN ===== */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, #1f0d00 0%, #0d0600 60%, #000 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#loading-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-content {
+  text-align: center;
+  color: var(--text-gold);
+  padding: 2rem;
+}
+
+/* Lotus Spinner */
+.lotus-spinner {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  margin: 0 auto 1.5rem;
+}
+
+.petal {
+  position: absolute;
+  width: 18px;
+  height: 40px;
+  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+  background: linear-gradient(180deg, #f0c040, #d4a017);
+  top: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  transform: translateX(-50%) translateY(-100%) rotate(calc(var(--i) * 45deg));
+  animation: petalspin 2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.25s);
+  box-shadow: 0 0 8px rgba(240, 192, 64, 0.5);
+}
+
+@keyframes petalspin {
+  0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(-100%) rotate(calc(var(--i) * 45deg)) scale(0.85); }
+  50% { opacity: 1; transform: translateX(-50%) translateY(-100%) rotate(calc(var(--i) * 45deg)) scale(1.1); }
+}
+
+.loading-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(1.4rem, 5vw, 2.2rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, #f0c040, #d4a017, #f0c040);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.4rem;
+  text-shadow: none;
+  filter: drop-shadow(0 0 8px rgba(212, 160, 23, 0.5));
+}
+
+.loading-sub {
+  color: rgba(240, 192, 64, 0.6);
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.progress-bar-wrap {
+  width: 260px;
+  max-width: 80vw;
+  height: 4px;
+  background: rgba(212, 160, 23, 0.2);
+  border-radius: 2px;
+  margin: 0 auto 1rem;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #d4a017, #f0c040);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(240, 192, 64, 0.6);
+}
+
+.loading-status {
+  font-size: 0.8rem;
+  color: rgba(240, 192, 64, 0.5);
+  letter-spacing: 0.05em;
+}
+
+/* ===== GAME CANVAS ===== */
+#game-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  touch-action: none;
+}
+
+/* ===== HUD ===== */
+#hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+
+#hud.hidden { opacity: 0; }
+
+/* Top Bar */
+#top-bar {
+  position: absolute;
+  top: env(safe-area-inset-top, 12px);
+  left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  pointer-events: none;
+}
+
+#location-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--glow);
+}
+
+.loc-icon { font-size: 1.1rem; }
+
+#location-text {
+  color: var(--text-gold);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+#fps-counter {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 6px 12px;
+  color: rgba(240, 192, 64, 0.7);
+  font-size: 0.75rem;
+  font-family: monospace;
+  backdrop-filter: blur(8px);
+}
+
+/* Pose Panel */
+#pose-panel {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: all;
+  align-items: center;
+}
+
+.pose-label {
+  color: rgba(240, 192, 64, 0.5);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+}
+
+.pose-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  border: 1.5px solid var(--panel-border);
+  background: var(--panel-bg);
+  color: var(--text-gold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  gap: 2px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pose-btn:active, .pose-btn.active {
+  border-color: var(--gold-light);
+  background: rgba(212, 160, 23, 0.25);
+  box-shadow: 0 0 14px rgba(212, 160, 23, 0.5), 0 2px 8px rgba(0,0,0,0.4);
+  transform: scale(1.05);
+}
+
+.pose-icon { font-size: 1.4rem; }
+.pose-text { font-size: 0.52rem; color: rgba(240, 192, 64, 0.7); letter-spacing: 0.02em; }
+
+/* Joystick */
+#joystick-container {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom, 20px) + 20px);
+  left: 30px;
+  pointer-events: all;
+}
+
+#joystick-base {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 160, 23, 0.12), rgba(212, 160, 23, 0.05));
+  border: 2px solid rgba(212, 160, 23, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 20px rgba(212, 160, 23, 0.15), inset 0 0 20px rgba(0,0,0,0.3);
+  touch-action: none;
+  user-select: none;
+}
+
+#joystick-knob {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(240, 192, 64, 0.9), rgba(180, 120, 10, 0.8));
+  border: 2px solid rgba(240, 192, 64, 0.6);
+  box-shadow: 0 0 12px rgba(212, 160, 23, 0.4), 0 3px 10px rgba(0,0,0,0.5);
+  transition: transform 0.05s ease;
+  pointer-events: none;
+}
+
+/* Camera Controls */
+#camera-controls {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom, 20px) + 20px);
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: all;
+}
+
+.cam-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1.5px solid var(--panel-border);
+  background: var(--panel-bg);
+  color: var(--text-gold);
+  font-size: 1.4rem;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.cam-btn:active {
+  background: rgba(212, 160, 23, 0.2);
+  border-color: var(--gold-light);
+  transform: scale(0.95);
+}
+
+/* Instructions Hint */
+#instructions-hint {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom, 20px) + 145px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  animation: hintfade 6s ease forwards;
+  white-space: nowrap;
+}
+
+#instructions-hint p {
+  color: rgba(240, 192, 64, 0.7);
+  font-size: 0.75rem;
+  line-height: 1.7;
+}
+
+@keyframes hintfade {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+
+/* Utility */
+.hidden { display: none !important; }
+.invisible { opacity: 0; visibility: hidden; }
+
+/* Desktop adjustments */
+@media (min-width: 768px) and (orientation: landscape) {
+  #joystick-container { bottom: 30px; left: 40px; }
+  #pose-panel { right: 20px; }
+  #joystick-base { width: 120px; height: 120px; }
+}
