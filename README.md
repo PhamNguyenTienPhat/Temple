@@ -1,155 +1,85 @@
-# 🏯 Chùa Phật Việt Nam 3D
-## Vietnamese Buddhist Temple Exploration Game
+# three.js
 
-Game 3D khám phá chùa Phật giáo Việt Nam chạy hoàn toàn trên trình duyệt.
+[![NPM Package][npm]][npm-url]
+[![Build Size][build-size]][build-size-url]
+[![NPM Downloads][npm-downloads]][npmtrends-url]
+[![jsDelivr Downloads][jsdelivr-downloads]][jsdelivr-url]
+[![Discord][discord]][discord-url]
 
----
+#### JavaScript 3D library
 
-## 📁 Cấu Trúc Dự Án
+The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library. The current builds only include WebGL and WebGPU renderers but SVG and CSS3D renderers are also available as addons.
 
-```
-temp/
-├── index.html          # File HTML chính
-├── style.css           # Giao diện & HUD
-├── AGENTS.md           # Yêu cầu dự án
-├── README.md           # Hướng dẫn này
-└── js/
-    ├── utils.js        # Hàm tiện ích & textures
-    ├── character.js    # Nhân vật 3D chi tiết
-    ├── environment.js  # Môi trường chùa
-    ├── particles.js    # Hệ thống khói & hiệu ứng
-    ├── controls.js     # Điều khiển touch/keyboard
-    └── game.js         # Engine game chính
-```
+[Examples](https://threejs.org/examples/) &mdash;
+[Docs](https://threejs.org/docs/) &mdash;
+[Manual](https://threejs.org/manual/) &mdash;
+[Wiki](https://github.com/mrdoob/three.js/wiki) &mdash;
+[Migrating](https://github.com/mrdoob/three.js/wiki/Migration-Guide) &mdash;
+[Questions](https://stackoverflow.com/questions/tagged/three.js) &mdash;
+[Forum](https://discourse.threejs.org/) &mdash;
+[Discord](https://discord.gg/56GBJwAnUS)
 
----
+### Usage
 
-## 🎮 Tính Năng
+This code creates a scene, a camera, and a geometric cube, and it adds the cube to the scene. It then creates a `WebGL` renderer for the scene and camera, and it adds that viewport to the `document.body` element. Finally, it animates the cube within the scene for the camera.
 
-### Nhân Vật
-- Nhân vật 3D đầy đủ: mặt, mắt, mũi, miệng, tai, tay, ngón tay, chân
-- **4 tư thế** với animation blending mượt mà:
-  1. 🧍 **Đứng Thường** – pose mặc định + animation đi bộ
-  2. 🙏 **Cầu Nguyện** – chắp tay, hai lòng bàn tay khép chặt
-  3. 🪔 **Dâng Nhang** – cầm 3 cây nhang giữa hai lòng bàn tay
-  4. 🛐 **Quỳ Lạy** – quỳ cúi đầu lạy Phật
+```javascript
+import * as THREE from 'three';
 
-### Môi Trường
-- **Sân Chùa** – lát đá, đèn lồng đỏ, cây xanh
-- **Cổng Tam Quan** – cổng chùa truyền thống
-- **Tượng Phật Khổng Lồ** – chi tiết nhất: mắt, mũi, môi, tai dài, ngón tay, vầng hào quang
-- **Lư Hương** – lò hương đồng 3 chân, cắm nhiều nén nhang
-- **Chính Điện** – chùa 3 tầng mái cong truyền thống Việt Nam
-- **Ao Sen** – hồ nước với hoa sen
-- **Vườn Cây** – cây đa, tre xanh
-- **Vòng Tường** – tường bao quanh chùa
+const width = window.innerWidth, height = window.innerHeight;
 
-### Hiệu Ứng
-- 💨 **Khói nhang** – particle shader mượt mà
-- 🌟 **Đom đóm** – điểm sáng bay trong đêm
-- 🌸 **Cánh hoa** – cánh hoa rơi nhẹ
-- 🏮 **Đèn lồng** – nhấp nháy thực tế
-- 🌙 **Bầu trời đêm** – trăng + 800 ngôi sao
+// init
 
----
+const camera = new THREE.PerspectiveCamera( 70, width / height, 0.01, 10 );
+camera.position.z = 1;
 
-## 🕹️ Điều Khiển
+const scene = new THREE.Scene();
 
-### Mobile (Portrait)
-| Hành Động | Điều Khiển |
-|-----------|-----------|
-| Di chuyển | Joystick góc trái |
-| Xoay camera | Kéo màn hình |
-| Zoom | Pinch hoặc nút +/− |
-| Đổi tư thế | Nút bên phải màn hình |
+const geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
+const material = new THREE.MeshNormalMaterial();
 
-### PC/Desktop
-| Hành Động | Phím |
-|-----------|------|
-| Di chuyển | WASD hoặc Arrow Keys |
-| Xoay camera | Kéo chuột trái |
-| Zoom | Scroll wheel |
-| Tư thế 1-4 | Phím số 1, 2, 3, 4 |
+const mesh = new THREE.Mesh( geometry, material );
+scene.add( mesh );
 
----
+const renderer = new THREE.WebGLRenderer( { antialias: true } );
+renderer.setSize( width, height );
+renderer.setAnimationLoop( animate );
+document.body.appendChild( renderer.domElement );
 
-## 🚀 Cách Chạy
+// animation
 
-### Cách 1: Dùng Python HTTP Server (Khuyến nghị)
-```bash
-cd path/to/temp
-python -m http.server 8080
-# Mở trình duyệt: http://localhost:8080
+function animate( time ) {
+
+	mesh.rotation.x = time / 2000;
+	mesh.rotation.y = time / 1000;
+
+	renderer.render( scene, camera );
+
+}
 ```
 
-### Cách 2: Dùng Node.js
-```bash
-npx serve .
-# Hoặc
-npx http-server . -p 8080
+If everything goes well, you should see [this](https://jsfiddle.net/w43x5Lgh/).
+
+### Cloning this repository
+
+Cloning the repo with all its history results in a ~2 GB download. If you don't need the whole history you can use the `depth` parameter to significantly reduce download size.
+
+```sh
+git clone --depth=1 https://github.com/mrdoob/three.js.git
 ```
 
-### Cách 3: VS Code Live Server
-- Cài extension "Live Server"
-- Chuột phải `index.html` → Open with Live Server
+### Change log
 
-### ⚠️ Lưu ý
-- **Không mở trực tiếp file HTML** (file://) vì sẽ bị lỗi CORS với CDN scripts
-- Cần kết nối internet để tải Three.js từ CDN
+[Releases](https://github.com/mrdoob/three.js/releases)
 
----
 
-## ⚙️ Yêu Cầu Kỹ Thuật
-
-- Trình duyệt hỗ trợ **WebGL 2.0**
-- Chrome 80+, Firefox 75+, Safari 14+, Edge 80+
-- RAM: tối thiểu 2GB
-- GPU: WebGL-capable (tất cả smartphone từ 2018+)
-
----
-
-## 🎯 Tối Ưu Hóa Mobile
-
-- **Pixel ratio giới hạn** 1.5x trên mobile
-- **Shadow map** dùng BasicShadowMap (nhanh hơn)
-- **Particle count** giới hạn 120 hạt khói
-- **Geometry ít polygon** hơn cho cây cối
-- **Frustum culling** tự động của Three.js
-- **Frame cap** dt max 50ms để tránh glitch
-
----
-
-## 🏗️ Kiến Trúc
-
-```
-Game (game.js)
-├── THREE.WebGLRenderer  ← WebGL rendering
-├── Environment          ← Toàn bộ môi trường chùa
-│   ├── Buddha Statue    ← ~200 meshes chi tiết
-│   ├── Temple Hall      ← Chính điện 3 tầng
-│   ├── Incense Burner   ← Lư hương + particle anchor
-│   ├── Gatehouse        ← Cổng tam quan
-│   ├── Trees/Bamboo     ← Thực vật
-│   └── Lanterns/Lights  ← Ánh sáng động
-├── Character            ← Nhân vật + 4 poses + animation
-├── ParticleSystem       ← Khói, đom đóm, hoa rơi
-└── Controls             ← Touch joystick + camera drag
-```
-
----
-
-## 📍 Địa Điểm Trong Game
-
-Hệ thống tự động nhận biết vị trí nhân vật:
-- **Cổng Tam Quan** – phía bắc
-- **Ao Sen** – sân trước
-- **Sân Chùa** – khu vực chính
-- **Tiền Đường** – phía trước chùa
-- **Lư Hương** – trước tượng Phật
-- **Trước Tượng Phật** – gần tượng
-- **Chính Điện** – bên trong/sau chùa
-- **Vườn Cây** – hai bên sân
-
----
-
-*Dự án tạo bởi Antigravity AI – 2026*
+[npm]: https://img.shields.io/npm/v/three
+[npm-url]: https://www.npmjs.com/package/three
+[build-size]: https://badgen.net/bundlephobia/minzip/three
+[build-size-url]: https://bundlephobia.com/result?p=three
+[npm-downloads]: https://img.shields.io/npm/dw/three
+[npmtrends-url]: https://www.npmtrends.com/three
+[jsdelivr-downloads]: https://data.jsdelivr.com/v1/package/npm/three/badge?style=rounded
+[jsdelivr-url]: https://www.jsdelivr.com/package/npm/three
+[discord]: https://img.shields.io/discord/685241246557667386
+[discord-url]: https://discord.gg/56GBJwAnUS
